@@ -1,6 +1,6 @@
 // localStorageMiddleware.ts
 import type { Middleware } from '@reduxjs/toolkit';
-import type { RootState } from './appState';
+import type { RootState } from '../store/appState';
 
 const localStorageMiddleware: Middleware<{}, RootState> = 
   (store) => 

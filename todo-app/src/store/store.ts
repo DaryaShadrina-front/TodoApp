@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import localStorageMiddleware from './localStorage';
+import localStorageMiddleware from '../utils/localStorage';
 import { rootReducer, type PreloadedState } from './appState';
 
 // загрузкa initialState из localStorage

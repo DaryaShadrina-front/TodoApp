@@ -8,9 +8,9 @@ import {
 import { ColorModeToggle } from "./components/ui/color-mode-toggle"
 import InputPlus from "./components/AddTodo/addTodo"
 import { useDispatch, useSelector } from "react-redux";
-import { createTask, removeTask, updateTask } from './utils/todoSlice';
+import { createTask, removeTask, updateTask } from './store/todoSlice';
 import { useState, type FC } from "react";
-import type { RootState } from "./utils/appState";
+import type { RootState } from "./store/appState";
 import { TaskItem } from "./components/TodoItem/todoItem";
 import { EditTask } from "./components/EditTodo/editTodo";
 import { TaskFilterSort } from "./components/TodoList/TaskFilterSort";
