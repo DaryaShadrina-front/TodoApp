@@ -1,100 +1,75 @@
-import {
-  Flex,
-  Text,
-  Box,
-  ClientOnly,
-  Skeleton,
-} from "@chakra-ui/react"
-import { ColorModeToggle } from "./components/ui/color-mode-toggle"
+import { Flex, Box } from "@chakra-ui/react"
 import InputPlus from "./components/AddTodo/addTodo"
-import { useDispatch, useSelector } from "react-redux";
-import { createTask, removeTask, updateTask } from './store/todoSlice';
 import { useState, type FC } from "react";
-import type { RootState } from "./store/appState";
-import { TaskItem } from "./components/TodoItem/todoItem";
 import { EditTask } from "./components/EditTodo/editTodo";
-import { TaskFilterSort } from "./components/TodoList/TaskFilterSort";
+import TodoList from "./components/TodoList/TodoList";
+import Header from "./components/Header/header";
+import { useTodo, type FilterType } from "./hooks/useTodo";
 
 export const App: FC = () => {
-  const dispatch = useDispatch();
-  const tasks = useSelector((state: RootState) => state.todo.tasks);
+  const { 
+    tasks, 
+    loading, 
+    error, 
+    totalPage, 
+    total,
+    addTask, 
+    removeTask, 
+    updateTask,
+  } = useTodo();
   const [isEditing, setIsEditing] = useState(false);
-  const [currentTaskId, setCurrentTaskId] = useState<string | null>(null);
-  const [currentTaskText, setCurrentTaskText] = useState('');
-  const [filter, setFilter] = useState<string[]>(['all']);
+  const [currentTask, setCurrentTask] = useState({ id: '', text: '' });
+  const [filter, setFilter] = useState<FilterType[]>(['all']);
   const [sortOrder, setSortOrder] = useState<string[]>(['newest']);
   
-  const addTask = (text: string) => {
-    if (text.trim()) {
-      dispatch(createTask(text));
-    }
-  };
   const handleEdit = (id: string, text: string) => {
-        setCurrentTaskId(id);
-        setCurrentTaskText(text);
-        setIsEditing(true);
+      setCurrentTask({ id, text });
+      setIsEditing(true);
   };
-  const handleDelete = (id: string) => {
-        dispatch(removeTask(id));
-  };
+
   const handleSave = (newText: string) => {
-        if (currentTaskId) {
-            dispatch(updateTask({
-              id: currentTaskId, text: newText,
-              completed: false
-            }));
-        }
+      if (currentTask.id) {
+          updateTask({
+            id: currentTask.id,
+            text: newText,
+            completed: false
+          });
+          setIsEditing(false);
+      }
   };
   const handleToggleComplete = (id: string, currentCompleted: boolean) => {
-      dispatch(updateTask({ id, completed: !currentCompleted }));
+      updateTask({ 
+        id,
+        text: tasks.find(t => t.id === id)?.text || '',  
+        completed: !currentCompleted });
   };
-  const filteredTasks = tasks.filter(task => {
-    if (filter[0] === 'completed') return task.completed;
-    if (filter[0] === 'incomplete') return !task.completed;
-    return true;
-  });
-  const sortedTasks = filteredTasks.sort((a, b) => {
-        if (sortOrder[0] === 'newest') {
-            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-        } else {
-            return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-        }
-  });
-  
+
   return (
-    <Box textAlign="left" fontSize="xl" pt="15vh">
+    <Box minH="100vh">
+      <Header />
       <Flex w='100%' h='100vh'>
-        <Flex w='100%' flexDir='column' ml='20%' mt='5%' mr='20%'>
-          <Text fontWeight='700' fontSize={30} mb={4}>Tasks</Text>
+        <Flex w='100%' flexDir='column' ml='20%' mt='10%' mr='20%'>
           <InputPlus onAdd={addTask}/>
-          <TaskFilterSort
-            filter={filter} 
-            setFilter={setFilter} 
-            sortOrder={sortOrder} 
-            setSortOrder={setSortOrder} 
+          <TodoList
+            tasks={tasks}
+            filter={filter}
+            setFilter={setFilter}
+            sortOrder={sortOrder}
+            setSortOrder={setSortOrder}
+            onEdit={handleEdit}
+            onDelete={removeTask}
+            onToggleComplete={handleToggleComplete}
+            loading={loading}
+            error={error}
+            totalPage={totalPage}
+            total={total}
           />
-          {sortedTasks.map(task => (
-              <TaskItem
-                  key={task.id}
-                  task={task}
-                  onEdit={handleEdit}
-                  onDelete={handleDelete}
-                  onToggleComplete={() => handleToggleComplete(task.id, task.completed)}
-              />
-          ))}
         </Flex>
       </Flex>
-
-      <Box pos="absolute" top="4" right="4">
-        <ClientOnly fallback={<Skeleton w="10" h="10" rounded="md" />}>
-          <ColorModeToggle />
-        </ClientOnly>
-      </Box>
-
       <EditTask
         isOpen={isEditing}
         onClose={() => setIsEditing(false)}
-        text={currentTaskText}
+        text={currentTask.text}
         onSave={handleSave}
       />
     </Box>

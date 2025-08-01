@@ -1,9 +1,10 @@
 import { createListCollection, Flex, Portal, Select,  } from "@chakra-ui/react";
 import { type FC } from "react";
+import type { FilterType } from "../../hooks/useTodo";
 
 interface TaskFilterSortProps {
     filter: string[];
-    setFilter: (filter: string[]) => void;
+    setFilter: (filter: FilterType[]) => void;
     sortOrder: string[];
     setSortOrder: (sortOrder: string[]) => void;
 }
@@ -16,7 +17,8 @@ export const TaskFilterSort: FC<TaskFilterSortProps> = ({ filter, setFilter, sor
                 width="320px"
                 value={filter}
                 onValueChange={(details) => {
-                    setFilter(details.value);
+                    const value = details.value as FilterType[];
+                    setFilter(value);
                 }} 
             >
                 <Select.HiddenSelect />
@@ -80,7 +82,7 @@ const optionsСompl = createListCollection({
     items: [
         { label: "All", value: "all" },
         { label: "Сompleted", value: "completed" },
-        { label: "Unfulfilled", value: "incomplete" },
+        { label: "Unfulfilled", value: "active" },
     ],
 })
 

@@ -72,7 +72,7 @@ export const EditTask: FC<EditTaskProps> = ({ isOpen, onClose, text, onSave }) =
                                                 Cancel
                                             </Button>
                                         </Dialog.ActionTrigger>
-                                        <Button onClick={handleSave} bg='teal.600'>Save</Button>
+                                        <Button onClick={handleSave} bg='teal.600' variant="outline">Save</Button>
                                     </Dialog.Footer>
                                 </Dialog.Content>
                             </Dialog.Positioner>

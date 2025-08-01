@@ -41,7 +41,7 @@ export const InputPlus: FC<InputPlusProps> = ({onAdd}) => {
                     placeholder='Add task' 
                     w='100%' 
                 />
-                <Button onClick={addTask} ml={5} bg='teal.600'>Add Task</Button>
+                <Button onClick={addTask} ml={5} bg='teal.600' variant="outline">Add Task</Button>
             </Flex>
             {errorMessage && (
                 <Alert.Root status="error">

@@ -8,7 +8,5 @@ export const rootReducer = combineReducers({
 export type RootState = ReturnType<typeof rootReducer>;
 
 export interface PreloadedState {
-    todo?: {
-        tasks: ToDoState['tasks'];
-    }
+    todo?: ToDoState;
 }
